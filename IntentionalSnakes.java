@@ -19,13 +19,20 @@ import javax.swing.JPanel;
 public class IntentionalSnakes extends JFrame {
 
     SnakePanel sP;
-
+    
+    static String randStr="794833197237160393201957046873261871765839224966989508157349348072106764409534422627271973217151823069258939135322958975941117864554464474659882013509149245363361361261909556418799535880361108255300561467580171804426827916940071996208439111939444522584053500593120014693846277545417656494006285925332864180866505493709041861463104911885089706813603771755321643275424672614578571543656724455862311180497760149029355250683302585691154279964535478189015302178508652968419753432801303755484984352540978370360908391281219115195475209118088526658624015112932859770239372150277843275068997867209466466702103538255134979560705628783261512536279538838381499845503806427046774827544309211600473780091008233884627256550666029152820204008794888450956227981540673700245844429385220085905358366394273259894671459957249919216216948925976514611476661285846496643396328781632669372387319923219710969215682389399765500793190787948331972999182338075896809585350517200424288361863988193745758914983414038689410455655414957544296835827948331972";
+    static void genRandStr(){
+        for(int i=0;i<1023;i++)
+            System.out.print((int)(Math.random()*10));
+    }
+    
     public IntentionalSnakes() throws InterruptedException {
         super("CrazySnakes");
         setSize(500, 500);
         sP = new SnakePanel();
         add(sP);
-
+//        GestaltPanel=new GestaltPanel(sP)
+//        add(gP);
         //new JButton("restart")
         //add()
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -179,9 +186,9 @@ public class IntentionalSnakes extends JFrame {
             }
 
             void processGestalts() {
-                if (isOpenG("hit wall bottom")) {
+                if (isOpenG("hit wall")) {
                     addGestalt(subconsciousLRChoice());
-                    filter("hit wall bottom").close();
+                    filter("hit wall").close();
                 }
 
                 //surveyGestalts
@@ -205,10 +212,16 @@ public class IntentionalSnakes extends JFrame {
 
             private Gestalt subconsciousLRChoice() {
                 int o = -1;
-                if (((int) Math.PI * (nd / 50)) % 2 == 0) {
+//#debug                System.out.println(randStr.charAt(nd));
+//#debug                System.out.println(nd);
+//#debug                System.out.println(((int)randStr.charAt(nd%randStr.length())-(int)'0') );
+                if (((int)randStr.charAt(nd%randStr.length())-(int)'0') % 2 == 0) {
+                    
+//                if (((int) Math.PI * (nd / 50)) % 2 == 0) {
                     o = 1;
                 }
                 nd++;
+                //System.out.println(o);
                 return new Gestalt(o);
             }
         }
@@ -359,6 +372,8 @@ public class IntentionalSnakes extends JFrame {
         //HWall w;
         Wall[] w = {new Wall(200, 100, 1, 200), new Wall(280, 0, 2, 170), new Wall(320, 0, 2, 70)};
         WholeSnake s;
+        
+        int time=0;
 
         UniverseObject[] uOs = new UniverseObject[w.length + 1];
 
@@ -366,10 +381,11 @@ public class IntentionalSnakes extends JFrame {
             //w = new HWall(100);
 
             s = new WholeSnake(250, 60, 2); //snake goes down at first
-            for (int i = 0; i < w.length; i++) {
-                uOs[i] = w[i];
+            uOs[0] = s;
+            
+            for (int i = 1; i < uOs.length; i++) {
+                uOs[i] = w[i-1];
             }
-            uOs[w.length] = s;
             
            // if(o instanceof Path)    
             Path np=new Path(200, 0, 200, 300, 2);
@@ -379,7 +395,7 @@ public class IntentionalSnakes extends JFrame {
         }
 
         void next() {
-
+            
             for (UniverseObject o : uOs) {
 
                 o.next();
@@ -414,6 +430,20 @@ public class IntentionalSnakes extends JFrame {
                     o.x = nx;
                 }
             }
+            
+            time++;
+
+            if(time>50)
+            {
+                s.x=250;
+                s.y=60;
+
+                s.dir=2;
+                time=0;
+                System.out.println("Restart");
+                repaint();
+            }
+            
         }
 
         public void paint(Graphics g) {
